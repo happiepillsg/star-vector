@@ -2,13 +2,21 @@ build:
   gpu: true
   python_version: "3.10"
   python_packages:
-    - packaging  # Add this line first
+    - packaging
     - torch==2.0.1
     - transformers==4.31.0
     - pillow
     - numpy
     - huggingface_hub
     - omegaconf
-    - git+https://github.com/joanrod/star-vector.git
+    - lxml
+    - scikit-image
+    - svgpathtools==1.6.1
+    - accelerate
+    - scipy==1.11.1
+    - seaborn==0.12.2
+    - sentencepiece==0.2.0
+    # Removing flash_attn==2.7.3 as it's causing build issues
+    # We'll modify the predict.py to work without it
 
 predict: "predict.py:Predictor"
