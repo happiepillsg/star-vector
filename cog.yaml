@@ -7,5 +7,7 @@ build:
     - pillow
     - numpy
     - huggingface_hub
+    - omegaconf
+    - git+https://github.com/joanrod/star-vector.git  # Install directly from GitHub
 
 predict: "predict.py:Predictor"
