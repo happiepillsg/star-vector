@@ -1,6 +1,13 @@
 build:
   gpu: true
   python_version: "3.11"
+  system_packages:
+    - libcairo2-dev  # Cairo library
+    - pkg-config     # Needed for Cairo configuration
+    - libpango1.0-dev  # Often needed with Cairo
+    - libjpeg-dev    # For image processing
+    - libgif-dev     # For GIF support
+    - librsvg2-dev   # For SVG support
   python_packages:
     # Core dependencies
     - torch==2.0.1
@@ -47,5 +54,8 @@ build:
     - fsspec
     - regex
     - protobuf
+    - clip-openai
+    - open-clip-torch
+    - cairocffi  # Explicitly include the Python binding for Cairo
 
 predict: "predict.py:Predictor"
