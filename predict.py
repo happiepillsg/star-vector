@@ -1,11 +1,23 @@
 from cog import BasePredictor, Input, Path
 import torch
 from PIL import Image
-from transformers import AutoModelForCausalLM, AutoProcessor
+import os
+import subprocess
+from huggingface_hub import hf_hub_download
 
 class Predictor(BasePredictor):
     def setup(self):
         """Load the model into memory to make running multiple predictions efficient"""
+        # Clone the StarVector repository if it doesn't exist
+        if not os.path.exists("star-vector"):
+            subprocess.run(["git", "clone", "https://github.com/joanrod/star-vector.git"], check=True)
+            
+        # Install the package
+        subprocess.run(["pip", "install", "-e", "./star-vector"], check=True)
+        
+        # Now import from the installed package
+        from transformers import AutoModelForCausalLM, AutoProcessor
+        
         model_name = "starvector/starvector-8b-im2svg"
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name, 
