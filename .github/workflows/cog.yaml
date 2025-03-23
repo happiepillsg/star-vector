@@ -1,0 +1,11 @@
+build:
+  gpu: true
+  python_version: "3.10"
+  python_packages:
+    - torch==2.0.1
+    - transformers==4.31.0
+    - pillow
+    - numpy
+    - huggingface_hub
+
+predict: "predict.py:Predictor"
