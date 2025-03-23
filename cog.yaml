@@ -1,23 +1,51 @@
 build:
   gpu: true
-  python_version: "3.11"  # Changed from 3.10 to 3.11
+  python_version: "3.11"
   python_packages:
-    - packaging
+    # Core dependencies
     - torch==2.0.1
     - transformers==4.31.0
-    - pillow
-    - numpy
-    - huggingface_hub
-    - omegaconf
-    - fairscale
-    - lxml
-    - scikit-image
-    - svgpathtools==1.6.1
     - accelerate
+    - fairscale
+    - huggingface_hub
+    
+    # Image processing
+    - pillow
+    - scikit-image
+    - torchvision
+    
+    # SVG handling
+    - svgpathtools==1.6.1
+    - cairosvg
+    - lxml
+    - svglib
+    
+    # Data processing
+    - numpy
     - scipy==1.11.1
-    - seaborn==0.12.2
+    - pandas
+    
+    # Parsing and text processing
+    - beautifulsoup4  # This provides bs4
     - sentencepiece==0.2.0
+    - tokenizers
+    
+    # Configuration and utilities
+    - omegaconf
+    - tqdm
+    - packaging
+    - pyyaml
+    - filelock
+    - requests
+    
+    # Additional dependencies that might be needed
     - einops
     - timm
+    - seaborn==0.12.2
+    - gradio_client==0.2.9
+    - httpx
+    - fsspec
+    - regex
+    - protobuf
 
 predict: "predict.py:Predictor"
