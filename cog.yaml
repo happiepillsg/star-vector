@@ -9,6 +9,7 @@ build:
     - numpy
     - huggingface_hub
     - omegaconf
+    - fairscale  # Add this for model loading
     - lxml
     - scikit-image
     - svgpathtools==1.6.1
@@ -16,7 +17,8 @@ build:
     - scipy==1.11.1
     - seaborn==0.12.2
     - sentencepiece==0.2.0
-    # Removing flash_attn==2.7.3 as it's causing build issues
-    # We'll modify the predict.py to work without it
+    # Additional dependencies that might be needed
+    - einops
+    - timm
 
 predict: "predict.py:Predictor"
