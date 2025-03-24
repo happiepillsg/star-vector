@@ -1,17 +1,36 @@
- build:
-     gpu: true
-     cuda: "11.8"
-     python_version: "3.10"
-     system_packages:
-       - librsvg2-dev
-       - patchelf
-     python_packages:
-       - torch==2.0.1
-       - transformers==4.33.2
-       - numpy==1.24.3
-       - cairosvg==2.7.0
-       - safetensors==0.3.3
-       - huggingface_hub==0.16.4
-       - pydantic==1.10.8
+build:
+  gpu: true
+  cuda: "11.8"
+  python_version: "3.10"
+  system_packages:
+    - libgl1-mesa-glx
+    - libglib2.0-0
+    - librsvg2-dev
+    - patchelf
+    - ffmpeg
+  python_packages:
+    - packaging==23.1
+    - torch==2.0.1
+    - transformers==4.33.2
+    - accelerate==0.23.0
+    - pillow==10.0.0
+    - numpy==1.24.3
+    - omegaconf==2.3.0
+    - cairosvg==2.7.0
+    - safetensors==0.3.3
+    - sentencepiece==0.1.99
+    - huggingface_hub==0.16.4
+    - pydantic==1.10.8
+    - einops==0.6.1
+    - lpips==0.1.4
+    - scikit-image==0.21.0
+    - wandb==0.15.8
+    - torchvision==0.15.2
+    - tqdm==4.65.0
+    - triton==2.0.0
+    - diffusers==0.21.4
+    - timm==0.9.5
+    - open-clip-torch==2.20.0
+    - ftfy==6.1.1
 
-   predict: "predict.py:Predictor"
+predict: "predict.py:Predictor" 
