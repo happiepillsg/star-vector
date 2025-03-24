@@ -8,12 +8,18 @@ import numpy as np
 from PIL import Image
 import cairosvg
 import io
+from transformers import AutoModelForCausalLM, AutoProcessor
 
 class Predictor(BasePredictor):
     def setup(self):
         """Load the model into memory to make running multiple predictions efficient"""
-        # Your setup code here
-        pass
+        model_name = "starvector/starvector-8b-im2svg"
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_name, 
+            torch_dtype=torch.float16, 
+            trust_remote_code=True
+        )
+        self.processor = self.model.model.processor
 
     def predict(
         self,
@@ -54,9 +60,28 @@ class Predictor(BasePredictor):
         torch.manual_seed(seed)
         np.random.seed(seed)
         
-        # Your prediction code here
-        # This is a placeholder - replace with your actual implementation
-        svg_code = f"<svg width='{svg_size}' height='{svg_size}' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' fill='white'/><text x='50%' y='50%' text-anchor='middle' dominant-baseline='middle'>Generated from: {prompt}</text></svg>"
+        if input_image is not None:
+            # Load and process the image
+            image = Image.open(input_image)
+            processed_image = self.processor(image, return_tensors="pt")['pixel_values']
+            
+            # Ensure correct shape
+            if not processed_image.shape[0] == 1:
+                processed_image = processed_image.unsqueeze(0)
+            
+            # Create batch
+            batch = {"image": processed_image}
+            
+            # Generate SVG
+            with torch.no_grad():
+                svg_code = self.model.generate_im2svg(batch, max_length=max_length)[0]
+        else:
+            # Handle text-to-svg generation
+            # Note: This assumes the model supports text-to-svg, modify as needed
+            with torch.no_grad():
+                # This is a placeholder - adjust based on actual model implementation
+                # Either implement text-to-svg or throw a meaningful error
+                raise NotImplementedError("Text-to-SVG generation is not yet implemented")
         
         result = {
             "svg_code": svg_code,
