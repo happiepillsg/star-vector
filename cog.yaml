@@ -9,8 +9,12 @@ build:
     - patchelf
     - ffmpeg
   python_packages:
-    # First install packaging separately to avoid flash-attn installation issues
+    # First install packaging separately
     - packaging==23.1
+    # Then explicitly install flash-attn with its dependencies
+    - "setuptools>=60.0.0"
+    - "wheel>=0.37.0"
+    - "ninja>=1.10.0"
     # Then install the rest of the dependencies
     - torch==2.0.1
     - transformers==4.33.2
@@ -34,7 +38,7 @@ build:
     - timm==0.9.5
     - open-clip-torch==2.20.0
     - ftfy==6.1.1
-    # Adding flash-attn with version that's compatible with CUDA 11.8
-    - flash-attn==2.2.5
+    # Install flash-attn at the end to ensure all dependencies are available
+    - "flash-attn==2.2.5"
 
 predict: "predict.py:Predictor"
