@@ -1,61 +1,38 @@
 build:
   gpu: true
-  python_version: "3.11"
-  system_packages:
-    - libcairo2-dev  # Cairo library
-    - pkg-config     # Needed for Cairo configuration
-    - libpango1.0-dev  # Often needed with Cairo
-    - libjpeg-dev    # For image processing
-    - libgif-dev     # For GIF support
-    - librsvg2-dev   # For SVG support
+  cuda: "11.8"
+  python_version: "3.10"
   python_packages:
-    # Core dependencies
     - torch==2.0.1
-    - transformers==4.31.0
-    - accelerate
-    - fairscale
-    - huggingface_hub
-    
-    # Image processing
-    - pillow
-    - scikit-image
-    - torchvision
-    
-    # SVG handling
-    - svgpathtools==1.6.1
-    - cairosvg
-    - lxml
-    - svglib
-    
-    # Data processing
-    - numpy
-    - scipy==1.11.1
-    - pandas
-    
-    # Parsing and text processing
-    - beautifulsoup4  # This provides bs4
-    - sentencepiece==0.2.0
-    - tokenizers
-    
-    # Configuration and utilities
-    - omegaconf
-    - tqdm
-    - packaging
-    - pyyaml
-    - filelock
-    - requests
-    
-    # Additional dependencies that might be needed
-    - einops
-    - timm
-    - seaborn==0.12.2
-    - gradio_client==0.2.9
-    - httpx
-    - fsspec
-    - regex
-    - protobuf
-    - clip-openai
-    - open-clip-torch
-    - cairocffi  # Explicitly include the Python binding for Cairo
+    - transformers==4.33.2
+    - accelerate==0.23.0
+    - pillow==10.0.0
+    - numpy==1.24.3
+    - omegaconf==2.3.0
+    - cairosvg==2.7.0
+    - safetensors==0.3.3
+    - sentencepiece==0.1.99
+    - huggingface_hub==0.16.4
+    - pydantic==1.10.8
+    - einops==0.6.1
+    - lpips==0.1.4
+    - scikit-image==0.21.0
+    - wandb==0.15.8
+    - torchvision==0.15.2
+    - tqdm==4.65.0
+    - flash-attn==2.3.0
+    - triton==2.0.0
+    - vllm==0.2.0
+    - diffusers==0.21.4
+    - timm==0.9.5
+    - open-clip-torch==2.20.0  # For CLIP models
+    - ftfy==6.1.1  # Required by CLIP
+    - regex==2023.6.3  # Required by CLIP
+  system_packages:
+    - libgl1-mesa-glx
+    - libglib2.0-0
+    - librsvg2-dev
+    - patchelf
+    - ffmpeg  # For potential video processing
 
 predict: "predict.py:Predictor"
