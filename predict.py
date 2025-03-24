@@ -24,7 +24,7 @@ class Predictor(BasePredictor):
     def predict(
         self,
         prompt: str = Input(description="Text prompt for SVG generation"),
-        input_image: Union[Path, None] = Input(
+        input_image: Optional[Path] = Input(
             description="Input image for im2svg task",
             default=None
         ),
@@ -77,11 +77,8 @@ class Predictor(BasePredictor):
                 svg_code = self.model.generate_im2svg(batch, max_length=max_length)[0]
         else:
             # Handle text-to-svg generation
-            # Note: This assumes the model supports text-to-svg, modify as needed
             with torch.no_grad():
-                # This is a placeholder - adjust based on actual model implementation
-                # Either implement text-to-svg or throw a meaningful error
-                raise NotImplementedError("Text-to-SVG generation is not yet implemented")
+                svg_code = self.model.generate_text2svg(prompt, max_length=max_length)[0]
         
         result = {
             "svg_code": svg_code,
@@ -101,4 +98,3 @@ class Predictor(BasePredictor):
                                     output_width=size, 
                                     output_height=size)
         return base64.b64encode(png_data).decode('utf-8')
-
