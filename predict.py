@@ -300,4 +300,109 @@ class Predictor(BasePredictor):
                 repetition_penalty=repetition_penalty,
                 n=num_generations,
                 use_beam_search=(num_beams > 1),
-                best_of=num_beams if num_beams >
+                best_of=num_beams if num_beams > 1 else None,
+                len_penalty=length_penalty,
+                stop=["</svg>"]  # Stop generation at SVG end tag
+            )
+            
+            # Generate with vLLM
+            outputs = model.generate(
+                prompts=[inputs["prompt"]],
+                sampling_params=sampling_params,
+                use_tqdm=False
+            )
+            
+            # Extract generated text
+            generated_svgs = []
+            for output in outputs:
+                svg = output.outputs[0].text
+                generated_svgs.append(self.post_process_svg(svg))
+        
+        # Prepare results
+        results = {
+            "model": model_name,
+            "task": task,
+            "engine": current_engine,
+            "parameters": {
+                "temperature": temperature,
+                "top_p": top_p,
+                "max_length": max_length,
+                "num_beams": num_beams,
+                "do_sample": do_sample,
+                "repetition_penalty": repetition_penalty,
+                "length_penalty": length_penalty,
+                "logit_bias": logit_bias
+            }
+        }
+        
+        # Add SVGs to results
+        if num_generations == 1:
+            svg_content = generated_svgs[0]
+            results["svg"] = svg_content
+            if return_base64:
+                results["svg_base64"] = self.svg_to_base64(svg_content)
+            if return_png:
+                results["png_base64"] = self.svg_to_png_base64(svg_content)
+        else:
+            results["svgs"] = generated_svgs
+            if return_base64:
+                results["svgs_base64"] = [self.svg_to_base64(svg) for svg in generated_svgs]
+            if return_png:
+                results["pngs_base64"] = [self.svg_to_png_base64(svg) for svg in generated_svgs]
+        
+        return results
+    
+    def post_process_svg(self, svg_text):
+        """Clean up and format the generated SVG"""
+        # Ensure the SVG is properly formatted
+        if not svg_text.startswith("<svg"):
+            svg_start = svg_text.find("<svg")
+            if svg_start != -1:
+                svg_text = svg_text[svg_start:]
+            else:
+                return ""  # No SVG tag found
+        
+        if not svg_text.endswith("</svg>"):
+            svg_end = svg_text.rfind("</svg>")
+            if svg_end != -1:
+                svg_text = svg_text[:svg_end+6]
+            else:
+                # Try to close the SVG tag if it's open but not closed
+                if "<svg" in svg_text and "</svg>" not in svg_text:
+                    svg_text += "</svg>"
+        
+        # Fix common SVG issues
+        # 1. Remove XML declaration if present (can cause issues in some viewers)
+        if svg_text.startswith("<?xml"):
+            xml_end = svg_text.find("?>")
+            if xml_end != -1:
+                svg_text = svg_text[xml_end+2:].strip()
+        
+        # 2. Ensure SVG has proper namespace
+        if 'xmlns="http://www.w3.org/2000/svg"' not in svg_text and "<svg" in svg_text:
+            svg_text = svg_text.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"', 1)
+        
+        # 3. Fix common errors in path data
+        svg_text = svg_text.replace("NaN", "0")
+        
+        return svg_text
+    
+    def svg_to_base64(self, svg_text):
+        """Convert SVG text to base64 encoded string"""
+        if not svg_text:
+            return ""
+        return base64.b64encode(svg_text.encode('utf-8')).decode('utf-8')
+    
+    def svg_to_png_base64(self, svg_text):
+        """Convert SVG to PNG and return as base64"""
+        if not svg_text:
+            return ""
+            
+        try:
+            # Use CairoSVG to convert SVG to PNG
+            import cairosvg
+            png_data = cairosvg.svg2png(bytestring=svg_text.encode('utf-8'))
+            return base64.b64encode(png_data).decode('utf-8')
+        except Exception as e:
+            logger.error(f"Error converting SVG to PNG: {str(e)}")
+            return ""
