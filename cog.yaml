@@ -34,7 +34,7 @@ build:
     - timm==0.9.5
     - open-clip-torch==2.20.0
     - ftfy==6.1.1
-    # Remove flash-attn as it's causing build issues
-    # - flash-attn==2.3.0
+    # Adding flash-attn with version that's compatible with CUDA 11.8
+    - flash-attn==2.2.5
 
 predict: "predict.py:Predictor"
