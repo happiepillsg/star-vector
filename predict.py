@@ -18,7 +18,7 @@ class Predictor(BasePredictor):
     def predict(
         self,
         prompt: str = Input(description="Text prompt for SVG generation"),
-        input_image: Optional[Path] = Input(
+        input_image: Union[Path, None] = Input(
             description="Input image for im2svg task",
             default=None
         ),
